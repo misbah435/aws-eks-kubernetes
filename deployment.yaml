@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: student-app
+  template:
+    metadata:
+      labels:
+        app: student-app
+    spec:
+      containers:
+      - name: student-app
+        image: 447239691698.dkr.ecr.ap-south-1.amazonaws.com/student-app:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DB_HOST
+          value: "misbah-db.cbeos4s6af0c.ap-south-1.rds.amazonaws.com"
+        - name: DB_NAME
+          value: "studentdb"
+        - name: DB_USER
+          value: "misbah"
+        - name: DB_PASS
+          value: "Misbah123!"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: student-app-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: student-app
+  ports:
+  - port: 80
+    targetPort: 5000
